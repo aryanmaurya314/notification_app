@@ -2,7 +2,6 @@
  * Controller for the notification request
  */
 const Notification = require("../models/notification.model");
-const constants = require("../utils/constants");
 
 /**
  * Accept a new notification request and return the tracking id
@@ -36,20 +35,21 @@ exports.acceptNotificationRequest = async (req, res) => {
  * Check the notification status(if email is sent or not) using tracking id
  */
 
-exports.checkNotificationStatus = async (req, res)=>{
-    const notification = await Notification.findOne({
-        ticketId: req.params.requestId
-    })
+exports.getNotificationStatus = async (req, res)=>{
+    const reqId = req.params.id;
 
-    if(notification.status == constants.sentStatus.sent){
+    try{
+        const notification = await Notification.findOne({
+            ticketId : reqId
+        });
         res.status(200).send({
-            message: "Email sent successfully"
+            requestId: notification.ticketId,
+            sentStatus: notification.sentStatus
+        })
+    }catch(err){
+        console.log(err);
+        res.status(500).send({
+            message:"Internal server error while fetching the notification status."
         })
     }
-    else
-    {
-        res.status(200).send(notification.status);
-    }
-
-
 }

@@ -24,6 +24,8 @@ mongoose.connect(dbConfigs.DB_URL, ()=>{
 
 // switching the routes
 require('./routes/notification.route')(app);
+// require the cron file
+require("./crons/cron");
 
 // start the server
 
